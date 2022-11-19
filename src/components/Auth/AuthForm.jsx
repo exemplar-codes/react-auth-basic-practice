@@ -1,13 +1,12 @@
 import { useContext, useRef, useState } from "react";
-import AuthContext from "../../store/auth/AuthContext";
+import AuthContext, { firebaseAuthAPIKey } from "../../store/auth/AuthContext";
 
 import classes from "./AuthForm.module.css";
 
-const firebaseAuthAPIKey = "AIzaSyBEu9KX4CD9qlDQZys5NddOUQJnmrfkr2Y";
 const signupAPIUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseAuthAPIKey}`;
 const loginAPIUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseAuthAPIKey}`;
 
-async function postAsJSON(url, body = {}) {
+export async function postAsJSON(url, body = {}) {
   return fetch(url, {
     method: "POST",
     body: JSON.stringify(body),

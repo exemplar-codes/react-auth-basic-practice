@@ -8,3 +8,6 @@ const AuthContext = React.createContext({
 });
 
 export default AuthContext;
+
+// for global storage
+export const firebaseAuthAPIKey = "AIzaSyBEu9KX4CD9qlDQZys5NddOUQJnmrfkr2Y";

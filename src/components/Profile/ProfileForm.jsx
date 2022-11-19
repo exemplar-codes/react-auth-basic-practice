@@ -1,15 +1,59 @@
+import { useContext, useRef, useState } from "react";
+import AuthContext, { firebaseAuthAPIKey } from "../../store/auth/AuthContext";
+import { postAsJSON } from "../Auth/AuthForm";
 import classes from "./ProfileForm.module.css";
 
+const changePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${firebaseAuthAPIKey}`;
+
 const ProfileForm = () => {
+  const authCtx = useContext(AuthContext);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const passwordInputRef = useRef();
+
+  // add validation
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const enteredNewPassword = passwordInputRef.current.value;
+
+    // maybe empty validation
+
+    (async () => {
+      setIsLoading(true);
+
+      let resp = await postAsJSON(changePasswordUrl, {
+        idToken: authCtx.token, // for security, and identification
+        password: enteredNewPassword,
+      });
+
+      const data = await resp.json();
+
+      if (resp.ok) {
+        console.log("SUCCESS", data);
+        authCtx.login(data.idToken); // idToken identifier used by Firebase
+      } else {
+        // handle failure - assuming this never happens
+        alert(data?.error?.message ?? "Password change failed");
+      }
+
+      setIsLoading(false);
+    })();
+  };
+
   return (
     <form className={classes.form}>
       <div className={classes.control}>
         <label htmlFor="new-password">New Password</label>
-        <input type="password" id="new-password" />
+        <input type="password" id="new-password" ref={passwordInputRef} />
       </div>
-      <div className={classes.action}>
-        <button>Change Password</button>
-      </div>
+      {!isLoading && (
+        <div className={classes.action}>
+          <button onClick={submitHandler}>Change Password</button>
+        </div>
+      )}
+      {isLoading && <p>Working...</p>}
     </form>
   );
 };
