@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import AuthContext from "../../store/auth/AuthContext";
 
 import classes from "./AuthForm.module.css";
 
@@ -17,6 +18,8 @@ async function postAsJSON(url, body = {}) {
 }
 
 const AuthForm = () => {
+  const authCtx = useContext(AuthContext);
+
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,6 +60,7 @@ const AuthForm = () => {
 
       if (resp.ok) {
         console.log("SUCCESS", data);
+        authCtx.login(data.idToken); // idToken identifier used by Firebase
       } else {
         alert(data?.error?.message ?? "Authentication failed");
       }

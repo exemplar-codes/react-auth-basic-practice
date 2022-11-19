@@ -9,8 +9,8 @@ function AuthContextProvider(props) {
   const authContextValue = {
     token: token,
     isLoggedIn: token !== "",
-    setToken,
-    resetToken,
+    login: setToken,
+    logout: resetToken,
   };
 
   return (
