@@ -1,4 +1,5 @@
 import { useContext, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import AuthContext, { firebaseAuthAPIKey } from "../../store/auth/AuthContext";
 import { postAsJSON } from "../Auth/AuthForm";
 import classes from "./ProfileForm.module.css";
@@ -7,6 +8,7 @@ const changePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:up
 
 const ProfileForm = () => {
   const authCtx = useContext(AuthContext);
+  const history = useHistory();
 
   const [isLoading, setIsLoading] = useState(false);
   const passwordInputRef = useRef();
@@ -33,6 +35,7 @@ const ProfileForm = () => {
       if (resp.ok) {
         console.log("SUCCESS", data);
         authCtx.login(data.idToken); // idToken identifier used by Firebase
+        history.replace("/"); // redirect on successful password change
       } else {
         // handle failure - assuming this never happens
         alert(data?.error?.message ?? "Password change failed");

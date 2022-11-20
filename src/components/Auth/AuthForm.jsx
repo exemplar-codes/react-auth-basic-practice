@@ -1,4 +1,5 @@
 import { useContext, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import AuthContext, { firebaseAuthAPIKey } from "../../store/auth/AuthContext";
 
 import classes from "./AuthForm.module.css";
@@ -18,6 +19,7 @@ export async function postAsJSON(url, body = {}) {
 
 const AuthForm = () => {
   const authCtx = useContext(AuthContext);
+  const history = useHistory();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +62,7 @@ const AuthForm = () => {
       if (resp.ok) {
         console.log("SUCCESS", data);
         authCtx.login(data.idToken); // idToken identifier used by Firebase
+        history.replace("/"); // redirect to home for successful sign up, log in
       } else {
         alert(data?.error?.message ?? "Authentication failed");
       }
