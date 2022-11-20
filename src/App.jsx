@@ -1,28 +1,41 @@
-import { Switch, Route } from "react-router-dom";
+import { useContext } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import Layout from "./components/Layout/Layout";
 import UserProfile from "./components/Profile/UserProfile";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
-import AuthContextProvider from "./store/auth/AuthContextProvider";
+import AuthContext from "./store/auth/AuthContext";
 
 function App() {
+  const authCtx = useContext(AuthContext);
+
   return (
-    <AuthContextProvider>
-      <Layout>
-        <Switch>
-          <Route path="/" exact>
-            <HomePage />
-          </Route>
+    <Layout>
+      <Switch>
+        <Route path="/" exact>
+          <HomePage />
+        </Route>
+        {!authCtx.isLoggedIn && (
           <Route path="/auth">
             <AuthPage />
           </Route>
-          <Route path="/profile">
-            <UserProfile />
-          </Route>
-        </Switch>
-      </Layout>
-    </AuthContextProvider>
+        )}
+        <Route path="/profile">
+          {authCtx.isLoggedIn && <UserProfile />}
+          {
+            !authCtx.isLoggedIn && (
+              <Redirect to="/auth" />
+            ) /* login to change password*/
+          }
+        </Route>
+
+        {/* for invalid, unauthorized routes */}
+        <Route path="*">
+          <Redirect to="/" />
+        </Route>
+      </Switch>
+    </Layout>
   );
 }
 
