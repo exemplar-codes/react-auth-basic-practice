@@ -19,6 +19,12 @@ function AuthContextProvider(props) {
     localStorage.removeItem("auth-token");
     localStorage.removeItem("auth-token-expiry");
     resetToken();
+
+    setAutoLogoutTimer((existingTimer) => {
+      window.clearTimeout(existingTimer);
+
+      return null;
+    });
   };
 
   const loginHandler = (token, expiryDuration) => {
