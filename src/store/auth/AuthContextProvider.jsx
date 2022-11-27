@@ -23,30 +23,36 @@ function AuthContextProvider(props) {
 
   const loginHandler = (token, expiryDuration) => {
     localStorage.setItem("auth-token", token);
-    localStorage.setItem(
-      "auth-token-expiry",
-      calculateFutureDateTime(expiryDuration).toString()
-    );
     setToken(token);
 
-    setAutoLogoutTimer((existingTimer) => {
-      window.clearTimeout(existingTimer);
+    if (expiryDuration) {
+      expiryDuration = Number(expiryDuration);
+      localStorage.setItem(
+        "auth-token-expiry",
+        calculateFutureDateTime(expiryDuration).toString()
+      );
+      setAutoLogoutTimer((existingTimer) => {
+        window.clearTimeout(existingTimer);
 
-      return window.setTimeout(() => {
-        console.log("Timer ran");
-        logoutHandler();
-      }, 1000 * expiryDuration);
-    });
+        return window.setTimeout(() => {
+          console.log("Timer ran");
+          logoutHandler();
+        }, 1000 * expiryDuration);
+      });
+    }
   };
 
   if (storedToken) {
     // check if token has expired on visit
-    const storedExpiryDateTime = new Date(
-      localStorage.getItem("auth-token-expiry")
-    );
-    const currentDateTime = new Date();
+    const storedTokenExpiryDateTime =
+      localStorage.getItem("auth-token-expiry") ?? null;
 
-    if (storedExpiryDateTime < currentDateTime) logoutHandler();
+    if (storedTokenExpiryDateTime) {
+      const storedExpiryDateTime = new Date(storedTokenExpiryDateTime);
+      const currentDateTime = new Date();
+
+      if (storedExpiryDateTime < currentDateTime) logoutHandler();
+    }
   }
 
   const authContextValue = {
