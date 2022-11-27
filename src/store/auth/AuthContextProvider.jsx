@@ -9,19 +9,15 @@ function calculateFutureDateTime(duration) {
 function AuthContextProvider(props) {
   const storedToken = localStorage.getItem("auth-token") ?? ""; // run once - login, logout or automatic token change
 
-  if (storedToken) {
-    // check if token has expired on visit
-    const storedExpiryDateTime = new Date(
-      localStorage.getItem("auth-token-expiry")
-    );
-    const currentDateTime = new Date();
-
-    if (storedExpiryDateTime < currentDateTime) logoutHandler();
-  }
-
   const [token, setToken] = useState(storedToken);
 
   const resetToken = () => setToken("");
+
+  const logoutHandler = () => {
+    localStorage.removeItem("auth-token");
+    localStorage.removeItem("auth-token-expiry");
+    resetToken();
+  };
 
   const loginHandler = (token, expiryDuration = 5) => {
     localStorage.setItem("auth-token", token);
@@ -32,11 +28,15 @@ function AuthContextProvider(props) {
     setToken(token);
   };
 
-  const logoutHandler = () => {
-    localStorage.removeItem("auth-token");
-    localStorage.removeItem("auth-token-expiry");
-    resetToken();
-  };
+  if (storedToken) {
+    // check if token has expired on visit
+    const storedExpiryDateTime = new Date(
+      localStorage.getItem("auth-token-expiry")
+    );
+    const currentDateTime = new Date();
+
+    if (storedExpiryDateTime < currentDateTime) logoutHandler();
+  }
 
   const authContextValue = {
     token: token,
