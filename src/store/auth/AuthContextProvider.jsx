@@ -11,7 +11,7 @@ function AuthContextProvider(props) {
 
   const [token, setToken] = useState(storedToken);
 
-  const [autoLogoutTimer, setAutoLogoutTimer] = useState(null);
+  const [, setAutoLogoutTimer] = useState(null);
 
   const resetToken = () => setToken("");
 
