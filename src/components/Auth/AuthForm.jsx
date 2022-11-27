@@ -60,7 +60,7 @@ const AuthForm = () => {
       const data = await resp.json();
 
       if (resp.ok) {
-        authCtx.login(data.idToken); // idToken identifier used by Firebase
+        authCtx.login(data.idToken, data.expiresIn); // idToken identifier used by Firebase
         history.replace("/"); // redirect to home for successful sign up, log in
       } else {
         alert(data?.error?.message ?? "Authentication failed");
