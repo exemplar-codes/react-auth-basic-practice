@@ -26,6 +26,10 @@ function AuthContextProvider(props) {
       calculateFutureDateTime(expiryDuration).toString()
     );
     setToken(token);
+
+    setTimeout(() => {
+      logoutHandler();
+    }, 1000 * expiryDuration);
   };
 
   if (storedToken) {
