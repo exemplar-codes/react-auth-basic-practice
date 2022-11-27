@@ -21,7 +21,7 @@ function AuthContextProvider(props) {
     resetToken();
   };
 
-  const loginHandler = (token, expiryDuration = 10) => {
+  const loginHandler = (token, expiryDuration) => {
     localStorage.setItem("auth-token", token);
     localStorage.setItem(
       "auth-token-expiry",
