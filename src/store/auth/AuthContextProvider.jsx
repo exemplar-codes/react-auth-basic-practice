@@ -11,6 +11,8 @@ function AuthContextProvider(props) {
 
   const [token, setToken] = useState(storedToken);
 
+  const [autoLogoutTimer, setAutoLogoutTimer] = useState(null);
+
   const resetToken = () => setToken("");
 
   const logoutHandler = () => {
@@ -19,7 +21,7 @@ function AuthContextProvider(props) {
     resetToken();
   };
 
-  const loginHandler = (token, expiryDuration = 5) => {
+  const loginHandler = (token, expiryDuration = 10) => {
     localStorage.setItem("auth-token", token);
     localStorage.setItem(
       "auth-token-expiry",
@@ -27,9 +29,14 @@ function AuthContextProvider(props) {
     );
     setToken(token);
 
-    setTimeout(() => {
-      logoutHandler();
-    }, 1000 * expiryDuration);
+    setAutoLogoutTimer((existingTimer) => {
+      window.clearTimeout(existingTimer);
+
+      return window.setTimeout(() => {
+        console.log("Timer ran");
+        logoutHandler();
+      }, 1000 * expiryDuration);
+    });
   };
 
   if (storedToken) {
