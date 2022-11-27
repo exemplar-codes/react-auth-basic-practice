@@ -35,7 +35,6 @@ function AuthContextProvider(props) {
         window.clearTimeout(existingTimer);
 
         return window.setTimeout(() => {
-          console.log("Timer ran");
           logoutHandler();
         }, 1000 * expiryDuration);
       });

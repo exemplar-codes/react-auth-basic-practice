@@ -33,7 +33,6 @@ const ProfileForm = () => {
       const data = await resp.json();
 
       if (resp.ok) {
-        console.log("SUCCESS", data);
         authCtx.login(data.idToken); // idToken identifier used by Firebase
         history.replace("/"); // redirect on successful password change
       } else {
